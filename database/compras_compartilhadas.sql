@@ -117,7 +117,7 @@ CREATE TABLE compras (
   item_id INT NOT NULL UNIQUE,
   usuario_id INT NOT NULL,
   valor DECIMAL(10,2) NOT NULL,
-  data_compra TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  comprado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   observacao TEXT,
 
   CONSTRAINT fk_compras_itens

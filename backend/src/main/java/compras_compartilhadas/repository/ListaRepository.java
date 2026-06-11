@@ -1,5 +1,8 @@
 package compras_compartilhadas.repository;
 
-public class ListaRepository {
-    
+import compras_compartilhadas.model.Lista;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface ListaRepository extends JpaRepository<Lista, Integer> {
+
 }
