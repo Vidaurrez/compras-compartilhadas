@@ -39,7 +39,7 @@ public class ItemController {
             return null;
         }
 
-        item.setListaId(itemAtualizado.getListaId());
+        item.setLista(itemAtualizado.getLista());
         item.setNome(itemAtualizado.getNome());
         item.setQuantidade(itemAtualizado.getQuantidade());
         item.setUnidade(itemAtualizado.getUnidade());

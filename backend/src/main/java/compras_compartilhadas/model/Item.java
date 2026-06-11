@@ -2,6 +2,7 @@ package compras_compartilhadas.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "itens")
@@ -11,8 +12,10 @@ public class Item {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "lista_id")
-    private Integer listaId;
+    @ManyToOne
+    @JoinColumn(name = "lista_id")
+    @JsonBackReference
+    private Lista lista;
 
     private String nome;
 
@@ -22,8 +25,9 @@ public class Item {
 
     private Boolean comprado;
 
-    @Column(name = "adicionado_por")
-    private Integer adicionadoPor;
+    @ManyToOne
+    @JoinColumn(name = "adicionado_por")
+    private Usuario adicionadoPor;
 
     @Column(name = "adicionado_em")
     private LocalDateTime adicionadoEm;
@@ -36,12 +40,12 @@ public class Item {
         this.id = id;
     }
 
-    public Integer getListaId() {
-        return listaId;
+    public Lista getLista() {
+        return lista;
     }
 
-    public void setListaId(Integer listaId) {
-        this.listaId = listaId;
+    public void setLista(Lista lista) {
+        this.lista = lista;
     }
 
     public String getNome() {
@@ -76,11 +80,11 @@ public class Item {
         this.comprado = comprado;
     }
 
-    public Integer getAdicionadoPor() {
+    public Usuario getAdicionadoPor() {
         return adicionadoPor;
     }
 
-    public void setAdicionadoPor(Integer adicionadoPor) {
+    public void setAdicionadoPor(Usuario adicionadoPor) {
         this.adicionadoPor = adicionadoPor;
     }
 

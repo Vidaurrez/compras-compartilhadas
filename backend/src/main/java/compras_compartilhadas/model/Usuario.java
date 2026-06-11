@@ -2,6 +2,7 @@ package compras_compartilhadas.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "usuarios")
@@ -15,6 +16,7 @@ public class Usuario {
 
     private String email;
 
+    @JsonIgnore
     @Column(name = "senha_hash")
     private String senhaHash;
 

@@ -39,8 +39,8 @@ public class CompraController {
             return null;
         }
 
-        compra.setItemId(compraAtualizada.getItemId());
-        compra.setUsuarioId(compraAtualizada.getUsuarioId());
+        compra.setItem(compraAtualizada.getItem());
+        compra.setUsuario(compraAtualizada.getUsuario());
         compra.setValor(compraAtualizada.getValor());
 
         return compraRepository.save(compra);

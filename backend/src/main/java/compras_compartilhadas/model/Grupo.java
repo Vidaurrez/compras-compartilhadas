@@ -13,8 +13,9 @@ public class Grupo {
 
     private String titulo;
 
-    @Column(name = "criado_por")
-    private Integer criadoPor;
+    @ManyToOne
+    @JoinColumn(name = "criado_por")
+    private Usuario criadoPor;
 
     @Column(name = "criado_em")
     private LocalDateTime criadoEm;
@@ -35,11 +36,11 @@ public class Grupo {
         this.titulo = titulo;
     }
 
-    public Integer getCriadoPor() {
+    public Usuario getCriadoPor() {
         return criadoPor;
     }
 
-    public void setCriadoPor(Integer criadoPor) {
+    public void setCriadoPor(Usuario criadoPor) {
         this.criadoPor = criadoPor;
     }
 

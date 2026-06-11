@@ -39,7 +39,7 @@ public class ListaController {
             return null;
         }
 
-        lista.setGrupoId(listaAtualizada.getGrupoId());
+        lista.setGrupo(listaAtualizada.getGrupo());
         lista.setTitulo(listaAtualizada.getTitulo());
         lista.setStatus(listaAtualizada.getStatus());
 
