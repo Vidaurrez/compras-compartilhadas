@@ -2,6 +2,9 @@ package compras_compartilhadas.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "grupos")
@@ -13,12 +16,24 @@ public class Grupo {
 
     private String titulo;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "grupo")
+    private List<UsuarioGrupo> membros = new ArrayList<>();
+
     @ManyToOne
     @JoinColumn(name = "criado_por")
     private Usuario criadoPor;
 
     @Column(name = "criado_em")
     private LocalDateTime criadoEm;
+
+    public List<UsuarioGrupo> getMembros() {
+        return membros;
+    }
+
+    public void setMembros(List<UsuarioGrupo> membros) {
+        this.membros = membros;
+    }
 
     public Integer getId() {
         return id;

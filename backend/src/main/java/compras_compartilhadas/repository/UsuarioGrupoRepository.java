@@ -9,5 +9,5 @@ import java.util.List;
 public interface UsuarioGrupoRepository
         extends JpaRepository<UsuarioGrupo, UsuarioGrupoId> {
 
-    List<UsuarioGrupo> findByGrupoId(Integer grupoId);
+    List<UsuarioGrupo> findByGrupo_Id(Integer grupoId);
 }

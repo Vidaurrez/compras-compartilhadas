@@ -9,32 +9,34 @@ import java.time.LocalDateTime;
 public class UsuarioGrupo {
 
     @Id
-    @Column(name = "usuario_id")
-    private Integer usuarioId;
+    @ManyToOne
+    @JoinColumn(name = "usuario_id")
+    private Usuario usuario;
 
     @Id
-    @Column(name = "grupo_id")
-    private Integer grupoId;
+    @ManyToOne
+    @JoinColumn(name = "grupo_id")
+    private Grupo grupo;
 
     private String papel;
 
     @Column(name = "entrou_em")
     private LocalDateTime entrouEm;
 
-    public Integer getUsuarioId() {
-        return usuarioId;
+    public Usuario getUsuario() {
+        return usuario;
     }
 
-    public void setUsuarioId(Integer usuarioId) {
-        this.usuarioId = usuarioId;
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 
-    public Integer getGrupoId() {
-        return grupoId;
+    public Grupo getGrupo() {
+        return grupo;
     }
 
-    public void setGrupoId(Integer grupoId) {
-        this.grupoId = grupoId;
+    public void setGrupo(Grupo grupo) {
+        this.grupo = grupo;
     }
 
     public String getPapel() {

@@ -5,16 +5,15 @@ import java.util.Objects;
 
 public class UsuarioGrupoId implements Serializable {
 
-    private Integer usuarioId;
-
-    private Integer grupoId;
+    private Integer usuario;
+    private Integer grupo;
 
     public UsuarioGrupoId() {
     }
 
-    public UsuarioGrupoId(Integer usuarioId, Integer grupoId) {
-        this.usuarioId = usuarioId;
-        this.grupoId = grupoId;
+    public UsuarioGrupoId(Integer usuario, Integer grupo) {
+        this.usuario = usuario;
+        this.grupo = grupo;
     }
 
     @Override
@@ -24,12 +23,12 @@ public class UsuarioGrupoId implements Serializable {
 
         UsuarioGrupoId that = (UsuarioGrupoId) o;
 
-        return Objects.equals(usuarioId, that.usuarioId)
-                && Objects.equals(grupoId, that.grupoId);
+        return Objects.equals(usuario, that.usuario)
+                && Objects.equals(grupo, that.grupo);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(usuarioId, grupoId);
+        return Objects.hash(usuario, grupo);
     }
 }

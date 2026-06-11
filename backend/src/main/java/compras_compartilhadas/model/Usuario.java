@@ -3,10 +3,13 @@ package compras_compartilhadas.model;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "usuarios")
 public class Usuario {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,11 +20,23 @@ public class Usuario {
     private String email;
 
     @JsonIgnore
+    @OneToMany(mappedBy = "usuario")
+    private List<UsuarioGrupo> grupos = new ArrayList<>();
+
+    @JsonIgnore
     @Column(name = "senha_hash")
     private String senhaHash;
 
     @Column(name = "criado_em")
     private LocalDateTime criadoEm;
+
+    public List<UsuarioGrupo> getGrupos() {
+        return grupos;
+    }
+
+    public void setGrupos(List<UsuarioGrupo> grupos) {
+        this.grupos = grupos;
+    }
 
     public Integer getId() {
         return id;

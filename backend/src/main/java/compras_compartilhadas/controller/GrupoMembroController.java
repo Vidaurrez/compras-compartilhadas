@@ -1,5 +1,6 @@
 package compras_compartilhadas.controller;
 
+import compras_compartilhadas.model.Grupo;
 import compras_compartilhadas.model.UsuarioGrupo;
 import compras_compartilhadas.model.UsuarioGrupoId;
 import compras_compartilhadas.repository.UsuarioGrupoRepository;
@@ -19,14 +20,17 @@ public class GrupoMembroController {
 
     @GetMapping("/{grupoId}/membros")
     public List<UsuarioGrupo> listarMembros(@PathVariable Integer grupoId) {
-        return usuarioGrupoRepository.findByGrupoId(grupoId);
+        return usuarioGrupoRepository.findByGrupo_Id(grupoId);
     }
 
     @PostMapping("/{grupoId}/membros")
     public UsuarioGrupo adicionarMembro(@PathVariable Integer grupoId,
                                         @RequestBody UsuarioGrupo usuarioGrupo) {
 
-        usuarioGrupo.setGrupoId(grupoId);
+        Grupo grupo = new Grupo();
+        grupo.setId(grupoId);
+
+        usuarioGrupo.setGrupo(grupo);
 
         return usuarioGrupoRepository.save(usuarioGrupo);
     }
