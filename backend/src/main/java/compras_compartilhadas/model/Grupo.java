@@ -16,6 +16,9 @@ public class Grupo {
 
     private String titulo;
 
+    @Column(name = "codigo_convite")
+    private String codigoConvite;
+
     @JsonIgnore
     @OneToMany(mappedBy = "grupo")
     private List<UsuarioGrupo> membros = new ArrayList<>();
@@ -65,5 +68,13 @@ public class Grupo {
 
     public void setCriadoEm(LocalDateTime criadoEm) {
         this.criadoEm = criadoEm;
+    }
+
+    public String getCodigoConvite() {
+        return codigoConvite;
+    }
+
+    public void setCodigoConvite(String codigoConvite) {
+        this.codigoConvite = codigoConvite;
     }
 }

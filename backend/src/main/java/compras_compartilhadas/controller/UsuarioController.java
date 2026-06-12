@@ -1,7 +1,11 @@
 package compras_compartilhadas.controller;
 
+import compras_compartilhadas.model.Grupo;
 import compras_compartilhadas.model.Usuario;
+import compras_compartilhadas.model.UsuarioGrupo;
+import compras_compartilhadas.repository.UsuarioGrupoRepository;
 import compras_compartilhadas.repository.UsuarioRepository;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,32 +15,44 @@ import java.util.List;
 public class UsuarioController {
 
     private final UsuarioRepository usuarioRepository;
+    private final UsuarioGrupoRepository usuarioGrupoRepository;
 
-    public UsuarioController(UsuarioRepository usuarioRepository) {
+    public UsuarioController(
+            UsuarioRepository usuarioRepository,
+            UsuarioGrupoRepository usuarioGrupoRepository) {
+
         this.usuarioRepository = usuarioRepository;
+        this.usuarioGrupoRepository = usuarioGrupoRepository;
     }
 
-    // READ - listar todos os usuários
     @GetMapping
     public List<Usuario> listarUsuarios() {
         return usuarioRepository.findAll();
     }
 
-    // READ - buscar usuário por id
     @GetMapping("/{id}")
     public Usuario buscarUsuarioPorId(@PathVariable Integer id) {
         return usuarioRepository.findById(id).orElse(null);
     }
 
-    // CREATE - criar novo usuário
+    @GetMapping("/{id}/grupos")
+    public List<Grupo> listarGruposDoUsuario(@PathVariable Integer id) {
+        return usuarioGrupoRepository.findByUsuario_Id(id)
+                .stream()
+                .map(UsuarioGrupo::getGrupo)
+                .toList();
+    }
+
     @PostMapping
     public Usuario criarUsuario(@RequestBody Usuario usuario) {
         return usuarioRepository.save(usuario);
     }
 
-    // UPDATE - atualizar usuário existente
     @PutMapping("/{id}")
-    public Usuario atualizarUsuario(@PathVariable Integer id, @RequestBody Usuario usuarioAtualizado) {
+    public Usuario atualizarUsuario(
+            @PathVariable Integer id,
+            @RequestBody Usuario usuarioAtualizado) {
+
         Usuario usuario = usuarioRepository.findById(id).orElse(null);
 
         if (usuario == null) {
@@ -50,7 +66,6 @@ public class UsuarioController {
         return usuarioRepository.save(usuario);
     }
 
-    // DELETE - excluir usuário
     @DeleteMapping("/{id}")
     public void deletarUsuario(@PathVariable Integer id) {
         usuarioRepository.deleteById(id);

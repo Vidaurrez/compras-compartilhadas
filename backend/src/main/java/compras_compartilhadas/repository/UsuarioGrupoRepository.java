@@ -10,4 +10,8 @@ public interface UsuarioGrupoRepository
         extends JpaRepository<UsuarioGrupo, UsuarioGrupoId> {
 
     List<UsuarioGrupo> findByGrupo_Id(Integer grupoId);
+
+    List<UsuarioGrupo> findByUsuario_Id(Integer usuarioId);
+
+    boolean existsByUsuario_IdAndGrupo_Id(Integer usuarioId, Integer grupoId);
 }

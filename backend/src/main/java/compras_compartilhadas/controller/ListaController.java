@@ -1,7 +1,10 @@
 package compras_compartilhadas.controller;
 
+import compras_compartilhadas.model.Item;
 import compras_compartilhadas.model.Lista;
+import compras_compartilhadas.repository.ItemRepository;
 import compras_compartilhadas.repository.ListaRepository;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,9 +14,12 @@ import java.util.List;
 public class ListaController {
 
     private final ListaRepository listaRepository;
+    private final ItemRepository itemRepository;
 
-    public ListaController(ListaRepository listaRepository) {
+    public ListaController(ListaRepository listaRepository,
+                           ItemRepository itemRepository) {
         this.listaRepository = listaRepository;
+        this.itemRepository = itemRepository;
     }
 
     @GetMapping
@@ -24,6 +30,12 @@ public class ListaController {
     @GetMapping("/{id}")
     public Lista buscarListaPorId(@PathVariable Integer id) {
         return listaRepository.findById(id).orElse(null);
+    }
+
+    // GET /listas/{id}/itens
+    @GetMapping("/{id}/itens")
+    public List<Item> listarItensDaLista(@PathVariable Integer id) {
+        return itemRepository.findByLista_Id(id);
     }
 
     @PostMapping
