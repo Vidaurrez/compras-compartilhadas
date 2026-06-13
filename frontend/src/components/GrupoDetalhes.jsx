@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-function GrupoDetalhes({ grupo, voltar }) {
+function GrupoDetalhes({ grupo, voltar, abrirLista }) {
   const [listas, setListas] = useState([]);
   const [tituloLista, setTituloLista] = useState("");
   const [mensagem, setMensagem] = useState("");
@@ -105,6 +105,10 @@ function GrupoDetalhes({ grupo, voltar }) {
             <div key={lista.id}>
               <h4>{lista.titulo}</h4>
               <p>Status: {lista.status}</p>
+
+              <button onClick={() => abrirLista(lista)}>
+                Abrir Lista
+              </button>
             </div>
           ))}
         </div>

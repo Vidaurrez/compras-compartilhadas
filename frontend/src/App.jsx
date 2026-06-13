@@ -8,6 +8,7 @@ import Login from "./components/Login";
 import Cadastro from "./components/Cadastro";
 import MeusGrupos from "./components/MeusGrupos";
 import GrupoDetalhes from "./components/GrupoDetalhes";
+import ListaDetalhes from "./components/ListaDetalhes";
 
 function App() {
   const [usuarios, setUsuarios] = useState([]);
@@ -18,6 +19,7 @@ function App() {
   const [tela, setTela] = useState("login");
   const [pagina, setPagina] = useState("dashboard");
   const [grupoSelecionado, setGrupoSelecionado] = useState(null);
+  const [listaSelecionada, setListaSelecionada] = useState(null);
 
   const [usuarioLogado, setUsuarioLogado] = useState(() => {
     const usuarioSalvo = localStorage.getItem("usuarioLogado");
@@ -83,6 +85,7 @@ function App() {
     localStorage.removeItem("usuarioLogado");
     setUsuarioLogado(null);
     setGrupoSelecionado(null);
+    setListaSelecionada(null);
     setTela("login");
     setPagina("dashboard");
   }
@@ -96,12 +99,24 @@ function App() {
 
   function abrirGrupo(grupo) {
     setGrupoSelecionado(grupo);
+    setListaSelecionada(null);
     setPagina("grupoDetalhes");
+  }
+
+  function abrirLista(lista) {
+    setListaSelecionada(lista);
+    setPagina("listaDetalhes");
   }
 
   function voltarParaGrupos() {
     setGrupoSelecionado(null);
+    setListaSelecionada(null);
     setPagina("grupos");
+  }
+
+  function voltarParaGrupoDetalhes() {
+    setListaSelecionada(null);
+    setPagina("grupoDetalhes");
   }
 
   if (!usuarioLogado && tela === "login") {
@@ -157,6 +172,15 @@ function App() {
         <GrupoDetalhes
           grupo={grupoSelecionado}
           voltar={voltarParaGrupos}
+          abrirLista={abrirLista}
+        />
+      )}
+
+      {pagina === "listaDetalhes" && listaSelecionada && (
+        <ListaDetalhes
+          lista={listaSelecionada}
+          usuarioLogado={usuarioLogado}
+          voltar={voltarParaGrupoDetalhes}
         />
       )}
 

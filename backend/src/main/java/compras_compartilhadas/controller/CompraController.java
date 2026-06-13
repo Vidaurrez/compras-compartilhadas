@@ -1,9 +1,13 @@
 package compras_compartilhadas.controller;
 
 import compras_compartilhadas.model.Compra;
+import compras_compartilhadas.model.Item;
 import compras_compartilhadas.repository.CompraRepository;
+import compras_compartilhadas.repository.ItemRepository;
+
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -11,9 +15,12 @@ import java.util.List;
 public class CompraController {
 
     private final CompraRepository compraRepository;
+    private final ItemRepository itemRepository;
 
-    public CompraController(CompraRepository compraRepository) {
+    public CompraController(CompraRepository compraRepository,
+                            ItemRepository itemRepository) {
         this.compraRepository = compraRepository;
+        this.itemRepository = itemRepository;
     }
 
     @GetMapping
@@ -26,9 +33,27 @@ public class CompraController {
         return compraRepository.findById(id).orElse(null);
     }
 
+    @GetMapping("/item/{itemId}")
+    public List<Compra> listarComprasDoItem(@PathVariable Integer itemId) {
+        return compraRepository.findByItem_Id(itemId);
+    }
+
     @PostMapping
     public Compra criarCompra(@RequestBody Compra compra) {
-        return compraRepository.save(compra);
+        compra.setCompradoEm(LocalDateTime.now());
+
+        Compra compraSalva = compraRepository.save(compra);
+
+        if (compraSalva.getItem() != null) {
+            Item item = itemRepository.findById(compraSalva.getItem().getId()).orElse(null);
+
+            if (item != null) {
+                item.setComprado(true);
+                itemRepository.save(item);
+            }
+        }
+
+        return compraSalva;
     }
 
     @PutMapping("/{id}")

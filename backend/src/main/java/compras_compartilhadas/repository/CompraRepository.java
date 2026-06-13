@@ -8,4 +8,6 @@ import java.util.List;
 public interface CompraRepository extends JpaRepository<Compra, Integer> {
 
     List<Compra> findByItem_Lista_Grupo_Id(Integer grupoId);
+
+    List<Compra> findByItem_Id(Integer itemId);
 }
