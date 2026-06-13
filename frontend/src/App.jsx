@@ -6,6 +6,8 @@ import Itens from "./components/Itens";
 import Compras from "./components/Compras";
 import Login from "./components/Login";
 import Cadastro from "./components/Cadastro";
+import MeusGrupos from "./components/MeusGrupos";
+import GrupoDetalhes from "./components/GrupoDetalhes";
 
 function App() {
   const [usuarios, setUsuarios] = useState([]);
@@ -14,6 +16,9 @@ function App() {
   const [itens, setItens] = useState([]);
   const [compras, setCompras] = useState([]);
   const [tela, setTela] = useState("login");
+  const [pagina, setPagina] = useState("dashboard");
+  const [grupoSelecionado, setGrupoSelecionado] = useState(null);
+
   const [usuarioLogado, setUsuarioLogado] = useState(() => {
     const usuarioSalvo = localStorage.getItem("usuarioLogado");
 
@@ -32,15 +37,6 @@ function App() {
       })
       .catch((erro) => {
         console.error("Erro ao buscar usuários:", erro);
-      });
-
-    fetch("http://localhost:8080/grupos")
-      .then((resposta) => resposta.json())
-      .then((dados) => {
-        setGrupos(dados);
-      })
-      .catch((erro) => {
-        console.error("Erro ao buscar grupos:", erro);
       });
 
     fetch("http://localhost:8080/listas")
@@ -69,15 +65,51 @@ function App() {
       .catch((erro) => {
         console.error("Erro ao buscar compras:", erro);
       });
-
   }, []);
 
+  useEffect(() => {
+    if (usuarioLogado) {
+      carregarGruposDoUsuario();
+    }
+  }, [usuarioLogado]);
+
+  function realizarLogin(usuario) {
+    localStorage.setItem("usuarioLogado", JSON.stringify(usuario));
+    setUsuarioLogado(usuario);
+    setPagina("dashboard");
+  }
+
+  function fazerLogout() {
+    localStorage.removeItem("usuarioLogado");
+    setUsuarioLogado(null);
+    setGrupoSelecionado(null);
+    setTela("login");
+    setPagina("dashboard");
+  }
+
+  function carregarGruposDoUsuario() {
+    fetch(`http://localhost:8080/usuarios/${usuarioLogado.id}/grupos`)
+      .then((resposta) => resposta.json())
+      .then((dados) => setGrupos(dados))
+      .catch((erro) => console.error("Erro ao buscar grupos:", erro));
+  }
+
+  function abrirGrupo(grupo) {
+    setGrupoSelecionado(grupo);
+    setPagina("grupoDetalhes");
+  }
+
+  function voltarParaGrupos() {
+    setGrupoSelecionado(null);
+    setPagina("grupos");
+  }
+
   if (!usuarioLogado && tela === "login") {
-  return (
-    <Login
-      onLogin={realizarLogin}
-      irParaCadastro={() => setTela("cadastro")}
-    />
+    return (
+      <Login
+        onLogin={realizarLogin}
+        irParaCadastro={() => setTela("cadastro")}
+      />
     );
   }
 
@@ -90,41 +122,51 @@ function App() {
     );
   }
 
-  function realizarLogin(usuario) {
-    localStorage.setItem("usuarioLogado", JSON.stringify(usuario));
-    setUsuarioLogado(usuario);
-  }
-
-  function fazerLogout() {
-    localStorage.removeItem("usuarioLogado");
-    setUsuarioLogado(null);
-    setTela("login");
-  }
-
   return (
     <div>
       <h1>Sistema de Compras Compartilhadas</h1>
 
       <p>Usuário logado: {usuarioLogado.nome}</p>
-      <button onClick={fazerLogout}>Sair</button>
 
-      <Usuarios usuarios={usuarios} />
+      <nav>
+        <button onClick={() => setPagina("dashboard")}>Dashboard</button>
+        <button onClick={() => setPagina("grupos")}>Meus Grupos</button>
+        <button onClick={() => setPagina("perfil")}>Perfil</button>
+        <button onClick={fazerLogout}>Sair</button>
+      </nav>
 
-    <hr />
+      <hr />
 
-      <Grupos grupos={grupos} />
+      {pagina === "dashboard" && (
+        <div>
+          <h2>Dashboard</h2>
+          <p>Bem-vindo, {usuarioLogado.nome}!</p>
+        </div>
+      )}
 
-    <hr />
+      {pagina === "grupos" && (
+        <MeusGrupos
+          usuarioLogado={usuarioLogado}
+          grupos={grupos}
+          atualizarGrupos={carregarGruposDoUsuario}
+          abrirGrupo={abrirGrupo}
+        />
+      )}
 
-      <Listas listas={listas} />
+      {pagina === "grupoDetalhes" && grupoSelecionado && (
+        <GrupoDetalhes
+          grupo={grupoSelecionado}
+          voltar={voltarParaGrupos}
+        />
+      )}
 
-    <hr />
-
-      <Itens itens={itens} />
-
-    <hr />
-
-      <Compras compras={compras} />
+      {pagina === "perfil" && (
+        <div>
+          <h2>Perfil</h2>
+          <p>Nome: {usuarioLogado.nome}</p>
+          <p>Email: {usuarioLogado.email}</p>
+        </div>
+      )}
     </div>
   );
 }
