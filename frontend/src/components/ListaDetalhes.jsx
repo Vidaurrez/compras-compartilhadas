@@ -8,6 +8,7 @@ function ListaDetalhes({ lista, usuarioLogado, voltar }) {
   const [unidade, setUnidade] = useState("");
   const [valoresCompra, setValoresCompra] = useState({});
   const [mensagem, setMensagem] = useState("");
+  const [resumo, setResumo] = useState(null);
 
   function carregarItens() {
     fetch(`http://localhost:8080/listas/${lista.id}/itens`)
@@ -21,7 +22,18 @@ function ListaDetalhes({ lista, usuarioLogado, voltar }) {
       });
   }
 
+  function carregarResumo() {
+    fetch(`http://localhost:8080/listas/${lista.id}/resumo`)
+      .then((resposta) => resposta.json())
+      .then((dados) => setResumo(dados))
+      .catch((erro) => {
+        console.error("Erro ao buscar resumo da lista:", erro);
+      });
+  }
+
   function carregarComprasDosItens(listaItens) {
+    setComprasPorItem({});
+
     listaItens.forEach((item) => {
       fetch(`http://localhost:8080/compras/item/${item.id}`)
         .then((resposta) => resposta.json())
@@ -41,6 +53,7 @@ function ListaDetalhes({ lista, usuarioLogado, voltar }) {
 
   useEffect(() => {
     carregarItens();
+    carregarResumo();
   }, [lista.id]);
 
   function criarItem(event) {
@@ -71,6 +84,7 @@ function ListaDetalhes({ lista, usuarioLogado, voltar }) {
         setUnidade("");
         setMensagem("Item criado com sucesso!");
         carregarItens();
+        carregarResumo();
       })
       .catch((erro) => {
         console.error("Erro ao criar item:", erro);
@@ -116,11 +130,54 @@ function ListaDetalhes({ lista, usuarioLogado, voltar }) {
           [item.id]: "",
         });
         carregarItens();
+        carregarResumo();
       })
       .catch((erro) => {
         console.error("Erro ao marcar item como comprado:", erro);
         setMensagem("Erro ao marcar item como comprado");
       });
+  }
+
+  function excluirItem(itemId) {
+    fetch(`http://localhost:8080/itens/${itemId}`, {
+      method: "DELETE",
+    })
+      .then(() => {
+        setMensagem("Item excluído com sucesso!");
+        carregarItens();
+        carregarResumo();
+      })
+      .catch((erro) => {
+        console.error("Erro ao excluir item:", erro);
+        setMensagem("Erro ao excluir item");
+      });
+  }
+
+  function finalizarLista() {
+    fetch(`http://localhost:8080/listas/${lista.id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        ...lista,
+        status: "FINALIZADA",
+      }),
+    })
+      .then((resposta) => resposta.json())
+      .then(() => {
+        window.location.reload();
+      })
+      .catch((erro) => {
+        console.error("Erro ao finalizar lista:", erro);
+      });
+  }
+
+  function formatarMoeda(valor) {
+    return Number(valor).toLocaleString("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    });
   }
 
   return (
@@ -130,32 +187,71 @@ function ListaDetalhes({ lista, usuarioLogado, voltar }) {
       <h2>{lista.titulo}</h2>
       <p>Status: {lista.status}</p>
 
-      <form onSubmit={criarItem}>
-        <h3>Adicionar Item</h3>
+      {lista.status !== "FINALIZADA" && (
+        <button onClick={finalizarLista}>Finalizar Lista</button>
+      )}
 
-        <input
-          type="text"
-          placeholder="Nome do item"
-          value={nomeItem}
-          onChange={(event) => setNomeItem(event.target.value)}
-        />
+      <h3>Resumo da lista</h3>
 
-        <input
-          type="number"
-          placeholder="Quantidade"
-          value={quantidade}
-          onChange={(event) => setQuantidade(event.target.value)}
-        />
+      {!resumo ? (
+        <p>Carregando resumo...</p>
+      ) : (
+        <div>
+          <p>Total da lista: {formatarMoeda(resumo.totalGasto)}</p>
+          <p>Quantidade de membros: {resumo.quantidadeMembros}</p>
+          <p>Valor por pessoa: {formatarMoeda(resumo.valorPorPessoa)}</p>
 
-        <input
-          type="text"
-          placeholder="Unidade opcional. Ex: kg, pacote, litro"
-          value={unidade}
-          onChange={(event) => setUnidade(event.target.value)}
-        />
+          <h4>Divisão por membro</h4>
 
-        <button type="submit">Adicionar Item</button>
-      </form>
+          {resumo.gastosPorUsuario.map((usuario) => (
+            <div key={usuario.usuarioId}>
+              <p>{usuario.nome}</p>
+              <p>Gastou: {formatarMoeda(usuario.totalGasto)}</p>
+
+              {Number(usuario.saldo) > 0 && (
+                <p>Saldo: +{formatarMoeda(usuario.saldo)} para receber</p>
+              )}
+
+              {Number(usuario.saldo) < 0 && (
+                <p>
+                  Saldo: -{formatarMoeda(Math.abs(usuario.saldo))} para pagar
+                </p>
+              )}
+
+              {Number(usuario.saldo) === 0 && <p>Saldo: zerado</p>}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {lista.status !== "FINALIZADA" && (
+        <form onSubmit={criarItem}>
+          <h3>Adicionar Item</h3>
+
+          <input
+            type="text"
+            placeholder="Nome do item"
+            value={nomeItem}
+            onChange={(event) => setNomeItem(event.target.value)}
+          />
+
+          <input
+            type="number"
+            placeholder="Quantidade"
+            value={quantidade}
+            onChange={(event) => setQuantidade(event.target.value)}
+          />
+
+          <input
+            type="text"
+            placeholder="Unidade opcional. Ex: kg, pacote, litro"
+            value={unidade}
+            onChange={(event) => setUnidade(event.target.value)}
+          />
+
+          <button type="submit">Adicionar Item</button>
+        </form>
+      )}
 
       {mensagem && <p>{mensagem}</p>}
 
@@ -186,11 +282,11 @@ function ListaDetalhes({ lista, usuarioLogado, voltar }) {
                 {item.comprado && compra && (
                   <div>
                     <p>Comprado por: {compra.usuario.nome}</p>
-                    <p>Valor pago: R$ {compra.valor}</p>
+                    <p>Valor pago: {formatarMoeda(compra.valor)}</p>
                   </div>
                 )}
 
-                {!item.comprado && (
+                {!item.comprado && lista.status !== "FINALIZADA" && (
                   <div>
                     <input
                       type="number"
@@ -206,6 +302,12 @@ function ListaDetalhes({ lista, usuarioLogado, voltar }) {
                       Marcar como comprado
                     </button>
                   </div>
+                )}
+
+                {lista.status !== "FINALIZADA" && (
+                  <button onClick={() => excluirItem(item.id)}>
+                    Excluir Item
+                  </button>
                 )}
               </div>
             );

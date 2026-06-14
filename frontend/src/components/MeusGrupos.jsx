@@ -60,6 +60,56 @@ function MeusGrupos({ usuarioLogado, grupos, atualizarGrupos, abrirGrupo }) {
       });
   }
 
+  function excluirGrupo(grupoId) {
+    const confirmar = window.confirm(
+      "Tem certeza que deseja excluir este grupo? Todas as listas, itens e compras serão apagados."
+    );
+
+    if (!confirmar) {
+      return;
+    }
+
+    fetch(`http://localhost:8080/grupos/${grupoId}/criador/${usuarioLogado.id}`, {
+      method: "DELETE",
+    })
+      .then((resposta) => resposta.json())
+      .then((dados) => {
+        setMensagem(dados.mensagem);
+
+        if (dados.sucesso) {
+          atualizarGrupos();
+        }
+      })
+      .catch((erro) => {
+        console.error("Erro ao excluir grupo:", erro);
+        setMensagem("Erro ao excluir grupo");
+      });
+  }
+
+  function sairDoGrupo(grupoId) {
+    const confirmar = window.confirm("Tem certeza que deseja sair deste grupo?");
+
+    if (!confirmar) {
+      return;
+    }
+
+    fetch(`http://localhost:8080/grupos/${grupoId}/usuario/${usuarioLogado.id}`, {
+      method: "DELETE",
+    })
+      .then((resposta) => resposta.json())
+      .then((dados) => {
+        setMensagem(dados.mensagem);
+
+        if (dados.sucesso) {
+          atualizarGrupos();
+        }
+      })
+      .catch((erro) => {
+        console.error("Erro ao sair do grupo:", erro);
+        setMensagem("Erro ao sair do grupo");
+      });
+  }
+
   return (
     <section>
       <h2>Meus Grupos</h2>
@@ -95,18 +145,31 @@ function MeusGrupos({ usuarioLogado, grupos, atualizarGrupos, abrirGrupo }) {
       <h3>Grupos que você participa</h3>
 
       <div>
-        {grupos.map((grupo) => (
-          <div key={grupo.id}>
-            <h4>{grupo.titulo}</h4>
-            <p>Código: {grupo.codigoConvite}</p>
-            
-            {grupo.criadoPor && (
-              <p>Criado por: {grupo.criadoPor.nome}</p>
-            )}
-            
-            <button onClick={() => abrirGrupo(grupo)}>Abrir Grupo</button>
-          </div>
-        ))}
+        {grupos.map((grupo) => {
+          const usuarioEhCriador =
+            grupo.criadoPor && grupo.criadoPor.id === usuarioLogado.id;
+
+          return (
+            <div key={grupo.id}>
+              <h4>{grupo.titulo}</h4>
+              <p>Código: {grupo.codigoConvite}</p>
+
+              {grupo.criadoPor && <p>Criado por: {grupo.criadoPor.nome}</p>}
+
+              <button onClick={() => abrirGrupo(grupo)}>Abrir Grupo</button>
+
+              {usuarioEhCriador ? (
+                <button onClick={() => excluirGrupo(grupo.id)}>
+                  Excluir Grupo
+                </button>
+              ) : (
+                <button onClick={() => sairDoGrupo(grupo.id)}>
+                  Sair do Grupo
+                </button>
+              )}
+            </div>
+          );
+        })}
       </div>
     </section>
   );

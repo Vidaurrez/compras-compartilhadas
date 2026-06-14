@@ -24,6 +24,7 @@ function GrupoDetalhes({ grupo, voltar, abrirLista }) {
       });
   }
 
+
   useEffect(() => {
     carregarListas();
     carregarMembros();
@@ -55,6 +56,33 @@ function GrupoDetalhes({ grupo, voltar, abrirLista }) {
         console.error("Erro ao criar lista:", erro);
         setMensagem("Erro ao criar lista");
       });
+  }
+
+  function excluirLista(listaId) {
+    const confirmar = window.confirm("Tem certeza que deseja excluir esta lista?");
+
+    if (!confirmar) {
+      return;
+    }
+
+    fetch(`http://localhost:8080/listas/${listaId}`, {
+      method: "DELETE",
+    })
+      .then(() => {
+        setMensagem("Lista excluída com sucesso!");
+        carregarListas();
+      })
+      .catch((erro) => {
+        console.error("Erro ao excluir lista:", erro);
+        setMensagem("Erro ao excluir lista");
+      });
+  }
+
+  function formatarMoeda(valor) {
+    return Number(valor).toLocaleString("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    });
   }
 
   return (
@@ -106,9 +134,10 @@ function GrupoDetalhes({ grupo, voltar, abrirLista }) {
               <h4>{lista.titulo}</h4>
               <p>Status: {lista.status}</p>
 
-              <button onClick={() => abrirLista(lista)}>
-                Abrir Lista
-              </button>
+              <button onClick={() => abrirLista(lista)}>Abrir Lista</button>
+
+              <button onClick={() => excluirLista(lista.id)}>Excluir Lista</button>
+              
             </div>
           ))}
         </div>
