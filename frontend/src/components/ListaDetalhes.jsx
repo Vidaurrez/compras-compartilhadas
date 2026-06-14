@@ -305,10 +305,11 @@ function ListaDetalhes({ lista, usuarioLogado, voltar }) {
                 )}
 
                 {lista.status !== "FINALIZADA" && (
-                  <button onClick={() => excluirItem(item.id)}>
+                  <button className="danger" onClick={() => excluirItem(item.id)}>
                     Excluir Item
                   </button>
                 )}
+               
               </div>
             );
           })}

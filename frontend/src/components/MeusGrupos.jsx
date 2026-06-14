@@ -1,9 +1,16 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function MeusGrupos({ usuarioLogado, grupos, atualizarGrupos, abrirGrupo }) {
   const [tituloGrupo, setTituloGrupo] = useState("");
   const [codigoConvite, setCodigoConvite] = useState("");
   const [mensagem, setMensagem] = useState("");
+  const [listasPorGrupo, setListasPorGrupo] = useState({});
+
+  useEffect(() => {
+    grupos.forEach((grupo) => {
+      carregarListasDoGrupo(grupo.id);
+    });
+  }, [grupos]);
 
   function criarGrupo(event) {
     event.preventDefault();
@@ -57,6 +64,20 @@ function MeusGrupos({ usuarioLogado, grupos, atualizarGrupos, abrirGrupo }) {
       .catch((erro) => {
         console.error("Erro ao entrar no grupo:", erro);
         setMensagem("Erro ao entrar no grupo");
+      });
+  }
+
+  function carregarListasDoGrupo(grupoId) {
+    fetch(`http://localhost:8080/grupos/${grupoId}/listas`)
+      .then((resposta) => resposta.json())
+      .then((listas) => {
+        setListasPorGrupo((listasAtuais) => ({
+          ...listasAtuais,
+          [grupoId]: listas,
+        }));
+      })
+      .catch((erro) => {
+        console.error("Erro ao buscar listas do grupo:", erro);
       });
   }
 
@@ -144,29 +165,50 @@ function MeusGrupos({ usuarioLogado, grupos, atualizarGrupos, abrirGrupo }) {
 
       <h3>Grupos que você participa</h3>
 
-      <div>
+      <div className="cards-grid">
         {grupos.map((grupo) => {
           const usuarioEhCriador =
             grupo.criadoPor && grupo.criadoPor.id === usuarioLogado.id;
 
+          const listasDoGrupo = listasPorGrupo[grupo.id] || [];
+          const primeirasListas = listasDoGrupo.slice(0, 3);
+
           return (
             <div key={grupo.id}>
               <h4>{grupo.titulo}</h4>
-              <p>Código: {grupo.codigoConvite}</p>
 
               {grupo.criadoPor && <p>Criado por: {grupo.criadoPor.nome}</p>}
 
-              <button onClick={() => abrirGrupo(grupo)}>Abrir Grupo</button>
+              <div className="card-listas">
+                <strong>Listas:</strong>
 
-              {usuarioEhCriador ? (
-                <button onClick={() => excluirGrupo(grupo.id)}>
-                  Excluir Grupo
-                </button>
-              ) : (
-                <button onClick={() => sairDoGrupo(grupo.id)}>
-                  Sair do Grupo
-                </button>
-              )}
+                {primeirasListas.length > 0 ? (
+                  primeirasListas.map((lista) => (
+                    <p key={lista.id}>{lista.titulo}</p>
+                  ))
+                ) : (
+                  <p>Nenhuma lista ainda</p>
+                )}
+
+                {listasDoGrupo.length > 3 && (
+                  <p>+{listasDoGrupo.length - 3} lista(s)</p>
+                )}
+              </div>
+
+              <div className="card-actions">
+                <button onClick={() => abrirGrupo(grupo)}>Abrir Grupo</button>
+
+                {usuarioEhCriador ? (
+                  <button className="danger" onClick={() => excluirGrupo(grupo.id)}>
+                    Excluir Grupo
+                  </button>
+                ) : (
+                  <button className="danger" onClick={() => sairDoGrupo(grupo.id)}>
+                    Sair do Grupo
+                  </button>
+                )}
+              </div>
+              
             </div>
           );
         })}

@@ -99,7 +99,7 @@ function GrupoDetalhes({ grupo, voltar, abrirLista }) {
       {membros.length === 0 ? (
         <p>Nenhum membro encontrado.</p>
       ) : (
-        <div>
+        <div className="cards-grid">
           {membros.map((membro) => (
             <div key={`${membro.usuario.id}-${membro.grupo.id}`}>
               <p>{membro.usuario.nome}</p>
@@ -128,16 +128,17 @@ function GrupoDetalhes({ grupo, voltar, abrirLista }) {
       {listas.length === 0 ? (
         <p>Nenhuma lista criada ainda.</p>
       ) : (
-        <div>
+        <div className="cards-grid">
           {listas.map((lista) => (
             <div key={lista.id}>
               <h4>{lista.titulo}</h4>
               <p>Status: {lista.status}</p>
 
-              <button onClick={() => abrirLista(lista)}>Abrir Lista</button>
+              <div className="card-actions">
+                <button onClick={() => abrirLista(lista)}>Abrir Lista</button>
+                <button className="danger" onClick={() => excluirLista(lista.id)}>Excluir Lista</button>
+              </div>
 
-              <button onClick={() => excluirLista(lista.id)}>Excluir Lista</button>
-              
             </div>
           ))}
         </div>

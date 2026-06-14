@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import "./App.css";
 import Usuarios from "./components/Usuarios";
 import Grupos from "./components/Grupos";
 import Listas from "./components/Listas";
