@@ -61,13 +61,13 @@ function Dashboard({ usuarioLogado, grupos, abrirGrupo, abrirLista }) {
 
       <p>Bem-vindo, {usuarioLogado.nome}!</p>
 
-      <h3>Resumo rápido</h3>
+      <h3>🏠 Resumo rápido</h3>
 
       <p>Grupos que você participa: {grupos.length}</p>
       <p>Listas encontradas: {listasRecentes.length}</p>
 
       <div className="carousel-header">
-        <h3>Meus grupos</h3>
+        <h3>👥 Meus grupos</h3>
 
         <div className="carousel-controls">
           <button
@@ -120,7 +120,7 @@ function Dashboard({ usuarioLogado, grupos, abrirGrupo, abrirLista }) {
       )}
 
       <div className="carousel-header">
-        <h3>Listas recentes</h3>
+        <h3>📝 Listas recentes</h3>
 
         <div className="carousel-controls">
           <button

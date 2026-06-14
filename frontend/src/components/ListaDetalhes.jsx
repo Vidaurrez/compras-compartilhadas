@@ -191,42 +191,62 @@ function ListaDetalhes({ lista, usuarioLogado, voltar }) {
         <button onClick={finalizarLista}>Finalizar Lista</button>
       )}
 
-      <h3>Resumo da lista</h3>
+      <h3>📊 Resumo da lista</h3>
 
       {!resumo ? (
         <p>Carregando resumo...</p>
       ) : (
-        <div>
-          <p>Total da lista: {formatarMoeda(resumo.totalGasto)}</p>
-          <p>Quantidade de membros: {resumo.quantidadeMembros}</p>
-          <p>Valor por pessoa: {formatarMoeda(resumo.valorPorPessoa)}</p>
+        <div className="resumo-lista">
+          <div className="resumo-cards">
+            <div className="resumo-card">
+              <span>Total da lista</span>
+              <strong>{formatarMoeda(resumo.totalGasto)}</strong>
+            </div>
+
+            <div className="resumo-card">
+              <span>Membros</span>
+              <strong>{resumo.quantidadeMembros}</strong>
+            </div>
+
+            <div className="resumo-card">
+              <span>Valor por pessoa</span>
+              <strong>{formatarMoeda(resumo.valorPorPessoa)}</strong>
+            </div>
+          </div>
 
           <h4>Divisão por membro</h4>
 
-          {resumo.gastosPorUsuario.map((usuario) => (
-            <div key={usuario.usuarioId}>
-              <p>{usuario.nome}</p>
-              <p>Gastou: {formatarMoeda(usuario.totalGasto)}</p>
+          <div className="membros-resumo">
+            {resumo.gastosPorUsuario.map((usuario) => (
+              <div className="membro-resumo-card" key={usuario.usuarioId}>
+                <strong>{usuario.nome}</strong>
 
-              {Number(usuario.saldo) > 0 && (
-                <p>Saldo: +{formatarMoeda(usuario.saldo)} para receber</p>
-              )}
+                <p>Gastou: {formatarMoeda(usuario.totalGasto)}</p>
 
-              {Number(usuario.saldo) < 0 && (
-                <p>
-                  Saldo: -{formatarMoeda(Math.abs(usuario.saldo))} para pagar
-                </p>
-              )}
+                {Number(usuario.saldo) > 0 && (
+                  <p className="saldo positivo">
+                    Recebe: {formatarMoeda(usuario.saldo)}
+                  </p>
+                )}
 
-              {Number(usuario.saldo) === 0 && <p>Saldo: zerado</p>}
-            </div>
-          ))}
+                {Number(usuario.saldo) < 0 && (
+                  <p className="saldo negativo">
+                    Paga: {formatarMoeda(Math.abs(usuario.saldo))}
+                  </p>
+                )}
+
+                {Number(usuario.saldo) === 0 && (
+                  <p className="saldo zerado">Saldo zerado</p>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
       {lista.status !== "FINALIZADA" && (
         <form onSubmit={criarItem}>
-          <h3>Adicionar Item</h3>
+          <h3>➕ Adicionar Item</h3>
 
           <input
             type="text"
@@ -255,7 +275,7 @@ function ListaDetalhes({ lista, usuarioLogado, voltar }) {
 
       {mensagem && <p>{mensagem}</p>}
 
-      <h3>Itens da lista</h3>
+      <h3>📦 Itens da lista</h3>
 
       {itens.length === 0 ? (
         <p>Nenhum item criado ainda.</p>
@@ -305,11 +325,13 @@ function ListaDetalhes({ lista, usuarioLogado, voltar }) {
                 )}
 
                 {lista.status !== "FINALIZADA" && (
-                  <button className="danger" onClick={() => excluirItem(item.id)}>
+                  <button
+                    className="danger"
+                    onClick={() => excluirItem(item.id)}
+                  >
                     Excluir Item
                   </button>
                 )}
-               
               </div>
             );
           })}

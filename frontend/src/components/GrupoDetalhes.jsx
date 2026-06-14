@@ -5,6 +5,7 @@ function GrupoDetalhes({ grupo, voltar, abrirLista }) {
   const [tituloLista, setTituloLista] = useState("");
   const [mensagem, setMensagem] = useState("");
   const [membros, setMembros] = useState([]);
+  const [confirmacao, setConfirmacao] = useState(null);
 
   function carregarListas() {
     fetch(`http://localhost:8080/grupos/${grupo.id}/listas`)
@@ -23,7 +24,6 @@ function GrupoDetalhes({ grupo, voltar, abrirLista }) {
         console.error("Erro ao buscar membros:", erro);
       });
   }
-
 
   useEffect(() => {
     carregarListas();
@@ -58,13 +58,17 @@ function GrupoDetalhes({ grupo, voltar, abrirLista }) {
       });
   }
 
+  function confirmarExclusaoLista(listaId) {
+    setConfirmacao({
+      titulo: "Excluir lista?",
+      mensagem:
+        "Tem certeza que deseja excluir esta lista? Os itens e compras vinculados também serão apagados.",
+      textoBotao: "Excluir lista",
+      aoConfirmar: () => excluirLista(listaId),
+    });
+  }
+
   function excluirLista(listaId) {
-    const confirmar = window.confirm("Tem certeza que deseja excluir esta lista?");
-
-    if (!confirmar) {
-      return;
-    }
-
     fetch(`http://localhost:8080/listas/${listaId}`, {
       method: "DELETE",
     })
@@ -78,13 +82,6 @@ function GrupoDetalhes({ grupo, voltar, abrirLista }) {
       });
   }
 
-  function formatarMoeda(valor) {
-    return Number(valor).toLocaleString("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-    });
-  }
-
   return (
     <section>
       <button onClick={voltar}>Voltar</button>
@@ -94,22 +91,40 @@ function GrupoDetalhes({ grupo, voltar, abrirLista }) {
 
       {grupo.criadoPor && <p>Criado por: {grupo.criadoPor.nome}</p>}
 
-      <h3>Membros do grupo</h3>
+      <h3>👥 Membros do grupo</h3>
 
       {membros.length === 0 ? (
         <p>Nenhum membro encontrado.</p>
       ) : (
-        <div className="cards-grid">
-          {membros.map((membro) => (
-            <div key={`${membro.usuario.id}-${membro.grupo.id}`}>
-              <p>{membro.usuario.nome}</p>
-            </div>
-          ))}
+        <div className="membros-grid">
+          {membros.map((membro) => {
+            const usuarioEhCriador =
+              grupo.criadoPor && grupo.criadoPor.id === membro.usuario.id;
+
+            return (
+              <div
+                className="membro-card"
+                key={`${membro.usuario.id}-${membro.grupo.id}`}
+              >
+                <div className="membro-avatar">
+                  {membro.usuario.nome.charAt(0).toUpperCase()}
+                </div>
+
+                <div>
+                  <strong>{membro.usuario.nome}</strong>
+
+                  <p>
+                    {usuarioEhCriador ? "Criador do grupo" : "Membro do grupo"}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
         </div>
       )}
 
       <form onSubmit={criarLista}>
-        <h3>Criar Lista</h3>
+        <h3>➕ Criar Lista</h3>
 
         <input
           type="text"
@@ -123,7 +138,7 @@ function GrupoDetalhes({ grupo, voltar, abrirLista }) {
 
       {mensagem && <p>{mensagem}</p>}
 
-      <h3>Listas do grupo</h3>
+      <h3>📝 Listas do grupo</h3>
 
       {listas.length === 0 ? (
         <p>Nenhuma lista criada ainda.</p>
@@ -136,11 +151,39 @@ function GrupoDetalhes({ grupo, voltar, abrirLista }) {
 
               <div className="card-actions">
                 <button onClick={() => abrirLista(lista)}>Abrir Lista</button>
-                <button className="danger" onClick={() => excluirLista(lista.id)}>Excluir Lista</button>
-              </div>
 
+                <button
+                  className="danger"
+                  onClick={() => confirmarExclusaoLista(lista.id)}
+                >
+                  Excluir Lista
+                </button>
+              </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {confirmacao && (
+        <div className="modal-overlay">
+          <div className="modal-confirmacao">
+            <h3>{confirmacao.titulo}</h3>
+            <p>{confirmacao.mensagem}</p>
+
+            <div className="modal-actions">
+              <button onClick={() => setConfirmacao(null)}>Cancelar</button>
+
+              <button
+                className="danger"
+                onClick={() => {
+                  confirmacao.aoConfirmar();
+                  setConfirmacao(null);
+                }}
+              >
+                {confirmacao.textoBotao}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </section>

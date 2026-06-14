@@ -137,19 +137,6 @@ section > p:nth-of-type(3) {
   font-weight: 700;
 }
 
-/* Emojis apenas nos subtítulos */
-section h3:nth-of-type(1)::before {
-  content: "📊 ";
-}
-
-section h3:nth-of-type(2)::before {
-  content: "👥 ";
-}
-
-section h3:nth-of-type(3)::before {
-  content: "📋 ";
-}
-
 /* Cabeçalho do carrossel */
 .carousel-header {
   display: flex;
@@ -289,6 +276,175 @@ section h3:nth-of-type(3)::before {
 }
 
 .card-actions button {
+  flex: 1;
+  margin: 0;
+}
+
+.resumo-lista {
+  margin-top: 16px;
+}
+
+.resumo-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin: 18px 0 24px;
+}
+
+.resumo-card {
+  background: var(--primary-light);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 18px;
+  text-align: center;
+}
+
+.resumo-card span {
+  display: block;
+  color: var(--muted);
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.resumo-card strong {
+  color: var(--primary-dark);
+  font-size: 22px;
+}
+
+.membros-resumo {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-top: 14px;
+}
+
+.membro-resumo-card {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-left: 5px solid var(--primary);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: var(--shadow);
+}
+
+.membro-resumo-card strong {
+  display: block;
+  color: var(--primary-dark);
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+
+.saldo {
+  font-weight: 700;
+}
+
+.saldo.positivo {
+  color: var(--primary-dark);
+}
+
+.saldo.negativo {
+  color: var(--danger);
+}
+
+.saldo.zerado {
+  color: var(--muted);
+}
+
+@media (max-width: 900px) {
+  .resumo-cards,
+  .membros-resumo {
+    grid-template-columns: 1fr;
+  }
+}
+
+.membros-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-top: 16px;
+}
+
+.membro-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-left: 5px solid var(--primary);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: var(--shadow);
+}
+
+.membro-avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: var(--primary-light);
+  color: var(--primary-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 20px;
+}
+
+.membro-card strong {
+  color: var(--primary-dark);
+  font-size: 17px;
+}
+
+.membro-card p {
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+@media (max-width: 900px) {
+  .membros-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(31, 41, 51, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  padding: 20px;
+}
+
+.modal-confirmacao {
+  background: var(--card);
+  border-radius: 20px;
+  padding: 24px;
+  max-width: 420px;
+  width: 100%;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+  border-top: 6px solid var(--danger);
+  text-align: center;
+}
+
+.modal-confirmacao h3 {
+  margin-top: 0;
+  border-bottom: none;
+  color: var(--danger);
+}
+
+.modal-confirmacao p {
+  color: var(--text);
+  line-height: 1.5;
+  margin: 14px 0 22px;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.modal-actions button {
   flex: 1;
   margin: 0;
 }

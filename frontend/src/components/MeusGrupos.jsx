@@ -5,6 +5,7 @@ function MeusGrupos({ usuarioLogado, grupos, atualizarGrupos, abrirGrupo }) {
   const [codigoConvite, setCodigoConvite] = useState("");
   const [mensagem, setMensagem] = useState("");
   const [listasPorGrupo, setListasPorGrupo] = useState({});
+  const [confirmacao, setConfirmacao] = useState(null);
 
   useEffect(() => {
     grupos.forEach((grupo) => {
@@ -81,15 +82,26 @@ function MeusGrupos({ usuarioLogado, grupos, atualizarGrupos, abrirGrupo }) {
       });
   }
 
+  function confirmarExclusaoGrupo(grupoId) {
+    setConfirmacao({
+      titulo: "Excluir grupo?",
+      mensagem:
+        "Tem certeza que deseja excluir este grupo? Todas as listas, itens e compras serão apagados.",
+      textoBotao: "Excluir grupo",
+      aoConfirmar: () => excluirGrupo(grupoId),
+    });
+  }
+
+  function confirmarSaidaGrupo(grupoId) {
+    setConfirmacao({
+      titulo: "Sair do grupo?",
+      mensagem: "Tem certeza que deseja sair deste grupo?",
+      textoBotao: "Sair do grupo",
+      aoConfirmar: () => sairDoGrupo(grupoId),
+    });
+  }
+
   function excluirGrupo(grupoId) {
-    const confirmar = window.confirm(
-      "Tem certeza que deseja excluir este grupo? Todas as listas, itens e compras serão apagados."
-    );
-
-    if (!confirmar) {
-      return;
-    }
-
     fetch(`http://localhost:8080/grupos/${grupoId}/criador/${usuarioLogado.id}`, {
       method: "DELETE",
     })
@@ -108,12 +120,6 @@ function MeusGrupos({ usuarioLogado, grupos, atualizarGrupos, abrirGrupo }) {
   }
 
   function sairDoGrupo(grupoId) {
-    const confirmar = window.confirm("Tem certeza que deseja sair deste grupo?");
-
-    if (!confirmar) {
-      return;
-    }
-
     fetch(`http://localhost:8080/grupos/${grupoId}/usuario/${usuarioLogado.id}`, {
       method: "DELETE",
     })
@@ -136,7 +142,7 @@ function MeusGrupos({ usuarioLogado, grupos, atualizarGrupos, abrirGrupo }) {
       <h2>Meus Grupos</h2>
 
       <form onSubmit={criarGrupo}>
-        <h3>Criar Grupo</h3>
+        <h3>➕ Criar Grupo</h3>
 
         <input
           type="text"
@@ -149,7 +155,7 @@ function MeusGrupos({ usuarioLogado, grupos, atualizarGrupos, abrirGrupo }) {
       </form>
 
       <form onSubmit={entrarGrupo}>
-        <h3>Entrar em Grupo</h3>
+        <h3>🚪 Entrar em Grupo</h3>
 
         <input
           type="text"
@@ -163,7 +169,7 @@ function MeusGrupos({ usuarioLogado, grupos, atualizarGrupos, abrirGrupo }) {
 
       {mensagem && <p>{mensagem}</p>}
 
-      <h3>Grupos que você participa</h3>
+      <h3>👥 Grupos que você participa</h3>
 
       <div className="cards-grid">
         {grupos.map((grupo) => {
@@ -199,20 +205,48 @@ function MeusGrupos({ usuarioLogado, grupos, atualizarGrupos, abrirGrupo }) {
                 <button onClick={() => abrirGrupo(grupo)}>Abrir Grupo</button>
 
                 {usuarioEhCriador ? (
-                  <button className="danger" onClick={() => excluirGrupo(grupo.id)}>
+                  <button
+                    className="danger"
+                    onClick={() => confirmarExclusaoGrupo(grupo.id)}
+                  >
                     Excluir Grupo
                   </button>
                 ) : (
-                  <button className="danger" onClick={() => sairDoGrupo(grupo.id)}>
+                  <button
+                    className="danger"
+                    onClick={() => confirmarSaidaGrupo(grupo.id)}
+                  >
                     Sair do Grupo
                   </button>
                 )}
               </div>
-              
             </div>
           );
         })}
       </div>
+
+      {confirmacao && (
+        <div className="modal-overlay">
+          <div className="modal-confirmacao">
+            <h3>{confirmacao.titulo}</h3>
+            <p>{confirmacao.mensagem}</p>
+
+            <div className="modal-actions">
+              <button onClick={() => setConfirmacao(null)}>Cancelar</button>
+
+              <button
+                className="danger"
+                onClick={() => {
+                  confirmacao.aoConfirmar();
+                  setConfirmacao(null);
+                }}
+              >
+                {confirmacao.textoBotao}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
