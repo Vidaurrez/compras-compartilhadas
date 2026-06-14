@@ -9,6 +9,7 @@ import Cadastro from "./components/Cadastro";
 import MeusGrupos from "./components/MeusGrupos";
 import GrupoDetalhes from "./components/GrupoDetalhes";
 import ListaDetalhes from "./components/ListaDetalhes";
+import Dashboard from "./components/Dashboard";
 
 function App() {
   const [usuarios, setUsuarios] = useState([]);
@@ -153,10 +154,12 @@ function App() {
       <hr />
 
       {pagina === "dashboard" && (
-        <div>
-          <h2>Dashboard</h2>
-          <p>Bem-vindo, {usuarioLogado.nome}!</p>
-        </div>
+        <Dashboard
+          usuarioLogado={usuarioLogado}
+          grupos={grupos}
+          abrirGrupo={abrirGrupo}
+          abrirLista={abrirLista}
+        />
       )}
 
       {pagina === "grupos" && (
