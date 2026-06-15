@@ -1,6 +1,6 @@
 # SplitCart
 
-Planeje compras em grupo. Divida os gastos sem esforço.
+Compre junto. Divida fácil.
 
 ## Sobre o Projeto
 
