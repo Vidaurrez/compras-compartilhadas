@@ -142,9 +142,9 @@ function App() {
 
   return (
     <div>
-      <h1>Sistema de Compras Compartilhadas</h1>
+      <h1>SplitCart</h1>
 
-      <p>Usuário logado: {usuarioLogado.nome}</p>
+      <p>Compre junto. Divida fácil.</p>
 
       <nav>
         <button onClick={() => setPagina("dashboard")}>Dashboard</button>
