@@ -1,10 +1,10 @@
 # SplitCart
 
-Planeje compras em grupo. Divida os gastos sem esforço.
+Compre junto. Divida fácil.
 
 ## Sobre o Projeto
 
-O SplitCart é uma aplicação web desenvolvida para a disciplina **Desenvolvimento de Aplicação Distribuída em Java**.
+O SplitCart é uma aplicação web desenvolvida para o Trabalho Prático **Desenvolvimento de Aplicação Distribuída em Java**.
 
 O sistema foi criado para auxiliar grupos de pessoas, como famílias, repúblicas estudantis, apartamentos compartilhados e amigos, na organização de compras coletivas e na divisão automática dos gastos.
 
