@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { API_URL } from "../config";
 
 function ListaDetalhes({ lista, usuarioLogado, voltar }) {
   const [itens, setItens] = useState([]);
@@ -11,7 +12,7 @@ function ListaDetalhes({ lista, usuarioLogado, voltar }) {
   const [resumo, setResumo] = useState(null);
 
   function carregarItens() {
-    fetch(`http://localhost:8080/listas/${lista.id}/itens`)
+    fetch(`${API_URL}/listas/${lista.id}/itens`)
       .then((resposta) => resposta.json())
       .then((dados) => {
         setItens(dados);
@@ -23,7 +24,7 @@ function ListaDetalhes({ lista, usuarioLogado, voltar }) {
   }
 
   function carregarResumo() {
-    fetch(`http://localhost:8080/listas/${lista.id}/resumo`)
+    fetch(`${API_URL}/listas/${lista.id}/resumo`)
       .then((resposta) => resposta.json())
       .then((dados) => setResumo(dados))
       .catch((erro) => {
@@ -35,7 +36,7 @@ function ListaDetalhes({ lista, usuarioLogado, voltar }) {
     setComprasPorItem({});
 
     listaItens.forEach((item) => {
-      fetch(`http://localhost:8080/compras/item/${item.id}`)
+      fetch(`${API_URL}/compras/item/${item.id}`)
         .then((resposta) => resposta.json())
         .then((dados) => {
           if (dados.length > 0) {
@@ -59,7 +60,7 @@ function ListaDetalhes({ lista, usuarioLogado, voltar }) {
   function criarItem(event) {
     event.preventDefault();
 
-    fetch("http://localhost:8080/itens", {
+    fetch(`${API_URL}/itens`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -107,7 +108,7 @@ function ListaDetalhes({ lista, usuarioLogado, voltar }) {
       return;
     }
 
-    fetch("http://localhost:8080/compras", {
+    fetch(`${API_URL}/compras`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -139,7 +140,7 @@ function ListaDetalhes({ lista, usuarioLogado, voltar }) {
   }
 
   function excluirItem(itemId) {
-    fetch(`http://localhost:8080/itens/${itemId}`, {
+    fetch(`${API_URL}/itens/${itemId}`, {
       method: "DELETE",
     })
       .then(() => {
@@ -154,7 +155,7 @@ function ListaDetalhes({ lista, usuarioLogado, voltar }) {
   }
 
   function finalizarLista() {
-    fetch(`http://localhost:8080/listas/${lista.id}`, {
+    fetch(`${API_URL}/listas/${lista.id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

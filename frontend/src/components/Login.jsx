@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { API_URL } from "../config";
 
 function Login({ onLogin, irParaCadastro }) {
   const [email, setEmail] = useState("");
@@ -8,7 +9,7 @@ function Login({ onLogin, irParaCadastro }) {
   function fazerLogin(event) {
     event.preventDefault();
 
-    fetch("http://localhost:8080/login", {
+    fetch(`${API_URL}/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -18,16 +19,16 @@ function Login({ onLogin, irParaCadastro }) {
         senha: senha,
       }),
     })
-        .then((resposta) => resposta.json())
-        .then((dados) => {
+      .then((resposta) => resposta.json())
+      .then((dados) => {
         if (!dados.sucesso) {
-            setErro(dados.mensagem);
-            return;
+          setErro(dados.mensagem);
+          return;
         }
 
         onLogin(dados.usuario);
-    })
-            .catch((erro) => {
+      })
+      .catch((erro) => {
         console.error("Erro ao fazer login:", erro);
         setErro("Erro ao conectar com o servidor");
       });
@@ -56,8 +57,10 @@ function Login({ onLogin, irParaCadastro }) {
           />
         </div>
 
-        <button type="submit">Entrar</button> <gap></gap>
-        <button type="button" onClick={irParaCadastro}>Criar conta</button>
+        <button type="submit">Entrar</button>
+        <button type="button" onClick={irParaCadastro}>
+          Criar conta
+        </button>
       </form>
 
       {erro && <p>{erro}</p>}

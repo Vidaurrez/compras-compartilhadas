@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { API_URL } from "../config";
 
 function MeusGrupos({ usuarioLogado, grupos, atualizarGrupos, abrirGrupo }) {
   const [tituloGrupo, setTituloGrupo] = useState("");
@@ -16,7 +17,7 @@ function MeusGrupos({ usuarioLogado, grupos, atualizarGrupos, abrirGrupo }) {
   function criarGrupo(event) {
     event.preventDefault();
 
-    fetch("http://localhost:8080/grupos", {
+    fetch(`${API_URL}/grupos`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -43,7 +44,7 @@ function MeusGrupos({ usuarioLogado, grupos, atualizarGrupos, abrirGrupo }) {
   function entrarGrupo(event) {
     event.preventDefault();
 
-    fetch("http://localhost:8080/grupos/entrar", {
+    fetch(`${API_URL}/grupos/entrar`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -69,7 +70,7 @@ function MeusGrupos({ usuarioLogado, grupos, atualizarGrupos, abrirGrupo }) {
   }
 
   function carregarListasDoGrupo(grupoId) {
-    fetch(`http://localhost:8080/grupos/${grupoId}/listas`)
+    fetch(`${API_URL}/grupos/${grupoId}/listas`)
       .then((resposta) => resposta.json())
       .then((listas) => {
         setListasPorGrupo((listasAtuais) => ({
@@ -102,7 +103,7 @@ function MeusGrupos({ usuarioLogado, grupos, atualizarGrupos, abrirGrupo }) {
   }
 
   function excluirGrupo(grupoId) {
-    fetch(`http://localhost:8080/grupos/${grupoId}/criador/${usuarioLogado.id}`, {
+    fetch(`${API_URL}/grupos/${grupoId}/criador/${usuarioLogado.id}`, {
       method: "DELETE",
     })
       .then((resposta) => resposta.json())
@@ -120,7 +121,7 @@ function MeusGrupos({ usuarioLogado, grupos, atualizarGrupos, abrirGrupo }) {
   }
 
   function sairDoGrupo(grupoId) {
-    fetch(`http://localhost:8080/grupos/${grupoId}/usuario/${usuarioLogado.id}`, {
+    fetch(`${API_URL}/grupos/${grupoId}/usuario/${usuarioLogado.id}`, {
       method: "DELETE",
     })
       .then((resposta) => resposta.json())

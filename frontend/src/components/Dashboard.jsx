@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { API_URL } from "../config";
 
 function Dashboard({ usuarioLogado, grupos, abrirGrupo, abrirLista }) {
   const [listasRecentes, setListasRecentes] = useState([]);
@@ -21,7 +22,7 @@ function Dashboard({ usuarioLogado, grupos, abrirGrupo, abrirLista }) {
     }
 
     grupos.forEach((grupo) => {
-      fetch(`http://localhost:8080/grupos/${grupo.id}/listas`)
+      fetch(`${API_URL}/grupos/${grupo.id}/listas`)
         .then((resposta) => resposta.json())
         .then((listas) => {
           listasAgrupadas[grupo.id] = listas;
@@ -149,10 +150,9 @@ function Dashboard({ usuarioLogado, grupos, abrirGrupo, abrirLista }) {
               <p>Grupo: {lista.grupoTitulo}</p>
               <p>Status: {lista.status}</p>
 
-                <div className="card-actions">
-                    <button onClick={() => abrirLista(lista)}>Abrir Lista</button>
-                </div>
-                
+              <div className="card-actions">
+                <button onClick={() => abrirLista(lista)}>Abrir Lista</button>
+              </div>
             </div>
           ))}
         </div>

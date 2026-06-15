@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { API_URL } from "../config";
 
 function Cadastro({ onCadastro, voltarParaLogin }) {
   const [nome, setNome] = useState("");
@@ -9,7 +10,7 @@ function Cadastro({ onCadastro, voltarParaLogin }) {
   function fazerCadastro(event) {
     event.preventDefault();
 
-    fetch("http://localhost:8080/cadastro", {
+    fetch(`${API_URL}/cadastro`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

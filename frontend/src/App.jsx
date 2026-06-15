@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import "./App.css";
+import { API_URL } from "./config";
 import Usuarios from "./components/Usuarios";
 import Grupos from "./components/Grupos";
 import Listas from "./components/Listas";
@@ -34,7 +35,7 @@ function App() {
   });
 
   useEffect(() => {
-    fetch("http://localhost:8080/usuarios")
+    fetch(`${API_URL}/usuarios`)
       .then((resposta) => resposta.json())
       .then((dados) => {
         setUsuarios(dados);
@@ -43,7 +44,7 @@ function App() {
         console.error("Erro ao buscar usuários:", erro);
       });
 
-    fetch("http://localhost:8080/listas")
+    fetch(`${API_URL}/listas`)
       .then((resposta) => resposta.json())
       .then((dados) => {
         setListas(dados);
@@ -52,7 +53,7 @@ function App() {
         console.error("Erro ao buscar listas:", erro);
       });
 
-    fetch("http://localhost:8080/itens")
+    fetch(`${API_URL}/itens`)
       .then((resposta) => resposta.json())
       .then((dados) => {
         setItens(dados);
@@ -61,7 +62,7 @@ function App() {
         console.error("Erro ao buscar itens:", erro);
       });
 
-    fetch("http://localhost:8080/compras")
+    fetch(`${API_URL}/compras`)
       .then((resposta) => resposta.json())
       .then((dados) => {
         setCompras(dados);
@@ -93,7 +94,7 @@ function App() {
   }
 
   function carregarGruposDoUsuario() {
-    fetch(`http://localhost:8080/usuarios/${usuarioLogado.id}/grupos`)
+    fetch(`${API_URL}/usuarios/${usuarioLogado.id}/grupos`)
       .then((resposta) => resposta.json())
       .then((dados) => setGrupos(dados))
       .catch((erro) => console.error("Erro ao buscar grupos:", erro));

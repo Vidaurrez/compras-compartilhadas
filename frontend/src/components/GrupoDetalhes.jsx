@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { API_URL } from "../config";
 
 function GrupoDetalhes({ grupo, voltar, abrirLista }) {
   const [listas, setListas] = useState([]);
@@ -8,7 +9,7 @@ function GrupoDetalhes({ grupo, voltar, abrirLista }) {
   const [confirmacao, setConfirmacao] = useState(null);
 
   function carregarListas() {
-    fetch(`http://localhost:8080/grupos/${grupo.id}/listas`)
+    fetch(`${API_URL}/grupos/${grupo.id}/listas`)
       .then((resposta) => resposta.json())
       .then((dados) => setListas(dados))
       .catch((erro) => {
@@ -17,7 +18,7 @@ function GrupoDetalhes({ grupo, voltar, abrirLista }) {
   }
 
   function carregarMembros() {
-    fetch(`http://localhost:8080/grupos/${grupo.id}/membros`)
+    fetch(`${API_URL}/grupos/${grupo.id}/membros`)
       .then((resposta) => resposta.json())
       .then((dados) => setMembros(dados))
       .catch((erro) => {
@@ -33,7 +34,7 @@ function GrupoDetalhes({ grupo, voltar, abrirLista }) {
   function criarLista(event) {
     event.preventDefault();
 
-    fetch("http://localhost:8080/listas", {
+    fetch(`${API_URL}/listas`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -69,7 +70,7 @@ function GrupoDetalhes({ grupo, voltar, abrirLista }) {
   }
 
   function excluirLista(listaId) {
-    fetch(`http://localhost:8080/listas/${listaId}`, {
+    fetch(`${API_URL}/listas/${listaId}`, {
       method: "DELETE",
     })
       .then(() => {
